@@ -47,18 +47,16 @@ Notably, we implement our ISR algorithms in a *sklearn*-style classifier class, 
 
 ```python
 from isr import ISRClassifier
-# xs: samples. 
-# ys: class labels. 
-# es: environment labels.
-
 classifier = ISRClassifier(version="mean", # "mean": ISR-mean. "cov": ISR-Cov.
                            d_spu=1, # the number of spurious features to remove
                           )
+# xs: training samples
+# ys: class labels
+# es: environment labels
 classifier.fit(xs,ys,es,
               chosen_class=0, # need to condition on a class
               )
-predictions = classifier.predict(test_xs)
-
+predictions = classifier.predict(test_xs) # test_xs: test samples
 ```
 
 
