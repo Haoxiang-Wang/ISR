@@ -8,6 +8,8 @@ In this code repo, we use the following keywords to represent three real-world d
 + `"CelebA"`: The [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) dataset (a face image dataset).
 + `"MultiNLI"`: The [MultiNLI](https://www.nyu.edu/projects/bowman/multinli/) dataset (a text dataset).
 
+![Two image datasets and one text dataset.](../figures/real_datasets.png "Real Datasets")
+
 ## Preparation
 
 + Please download the datasets in to a folder and define the folder path as `DATA_FOLDER` in `configs/__init__.py` .
