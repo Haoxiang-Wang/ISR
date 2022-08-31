@@ -34,8 +34,8 @@ def plot_nenvs(df_data, dirname, file_name='', save=True, block=False):
                                      color=f'C{id_m}',
                                      label=model, marker=marker,
                                      linewidth=2)
-            top = (df_d_m["mean"] + df_d_m["std"] / 2).to_numpy()
-            bottom = (df_d_m["mean"] - df_d_m["std"] / 2).to_numpy()
+            top = (df_d_m["mean"] + df_d_m["std"] / 2).to_numpy().astype(float)
+            bottom = (df_d_m["mean"] - df_d_m["std"] / 2).to_numpy().astype(float)
             xs = np.arange(2, 11).astype(float)
             axs[id_d].fill_between(xs, bottom, top, facecolor=f'C{id_m}', alpha=0.2)
             legends.append(legend)
