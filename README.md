@@ -14,6 +14,7 @@ If you find this repo useful for your research, please consider citing our paper
   url = {https://proceedings.mlr.press/v162/wang22x.html},
 }
 ```
+![ISR-Mean illustration](figures/isr-mean.png)
 
 ## Installation
 This repo was tested with Ubuntu 20.04, Python 3.8/3.9 ([Anaconda](https://www.anaconda.com/products/individual) version), Pytorch 1.9/1.10/1.11 with CUDA 11. The experiments on the real datasets are tested on a single GPU of 16GB memory, but 11GB may also suffice.
