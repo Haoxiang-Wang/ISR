@@ -7,8 +7,10 @@ import json
 
 
 class ISR():
-    def __init__(self, dim_inv, fit_method='cov', l2_reg=1, verbose=False,
-                 regression=False, spu_proj=False, logistic_regression=False, hparams=None, num_iterations=1000,
+    def __init__(self, dim_inv, fit_method='cov', l2_reg=0.01,
+                 verbose=False, regression=False, spu_proj=False,
+                 logistic_regression=False,
+                 hparams=None, num_iterations=1000,
                  ):
         self.dim_inv = dim_inv
         self.fit_method = fit_method
@@ -59,7 +61,7 @@ class ISR():
 
     def fit(self, envs, fit_method=None, n_env=None, env_idxes=None,
             extracted_class=1, fit_clf=True, regression=None, spu_proj=None,
-            return_proj_mat=False):
+            return_proj_mat=False, dim_spu=None):
         regression = regression if regression is not None else self.regression
         extracted_class = -1 if regression else extracted_class
         label_space = [-1] if regression else [0, 1]
@@ -68,7 +70,7 @@ class ISR():
         n_env = len(envs) if n_env is None else n_env
         n_dim = data[0].shape[-1]
         self.dim = n_dim
-        self.dim_spu = n_dim - self.dim_inv
+        self.dim_spu = n_dim - self.dim_inv if dim_spu is None else dim_spu
 
         if fit_method is None:
             fit_method = self.fit_method
@@ -95,17 +97,23 @@ class ISR():
             mean_projs = []
             for label in [0, 1]:
                 proj_mat = self.fit(envs, fit_method='mean', n_env=None, extracted_class=label, return_proj_mat=True,
-                                    fit_clf=False)
+                                    fit_clf=False, spu_proj=True, dim_spu=min(n_env - 1, n_dim - self.dim_inv))
                 mean_projs.append(proj_mat)
+                # print("proj_mat.shape", proj_mat.shape)
             concat_projs = np.concatenate([proj for proj in mean_projs], axis=1)
+            # print("concat_projs.shape", concat_projs.shape)
             P = np.linalg.svd(concat_projs, full_matrices=True)[0]  # compute the flag-mean
+            # print("P.shape", P.shape)
+            P = P[:, np.flip(np.arange(P.shape[1]))]
+            # print("P.shape", P.shape)
+            self.dim_spu = n_dim - self.dim_inv
 
         else:
             raise ValueError(f'fit_method = {fit_method} is not supported')
 
         self.P = P  # projection matrix
         if spu_proj:
-            proj_mat = P[:, self.dim_inv:]
+            proj_mat = P[:, -self.dim_spu:]
         else:
             proj_mat = P[:, :self.dim_inv]
         self.proj_mat = proj_mat
