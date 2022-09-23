@@ -1,5 +1,8 @@
+import torch
 from data.dro_dataset import DRODataset
+from data.utils import subsample, Subset
 from data.torchvision_datasets import load_CIFAR10
+import numpy as np
 
 
 ########################

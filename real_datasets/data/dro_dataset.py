@@ -1,5 +1,5 @@
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, Subset
 from torch.utils.data.sampler import WeightedRandomSampler
 
 
@@ -10,12 +10,15 @@ class DRODataset(Dataset):
         self.n_groups = n_groups
         self.n_classes = n_classes
         self.group_str = group_str_fn
-        group_array = []
-        y_array = []
-
-        for x, y, g in self:
-            group_array.append(g)
-            y_array.append(y)
+        if isinstance(dataset, Subset):
+            full_dataset = dataset.dataset
+            assert not isinstance(full_dataset, Subset)
+            indices = dataset.indices  # subset indices
+            group_array = full_dataset.group_array[indices]
+            y_array = full_dataset.y_array[indices]
+        else:
+            group_array = dataset.group_array
+            y_array = dataset.y_array
         self._group_array = torch.LongTensor(group_array)
         self._y_array = torch.LongTensor(y_array)
         self._group_counts = (torch.arange(self.n_groups).unsqueeze(1) == self._group_array).sum(1).float()
